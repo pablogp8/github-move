@@ -1,0 +1,20 @@
+{
+  "name": "proyecto2",
+  "version": "1.0.0",
+  "description": "Proyecto 2 compiladores 2 2018 primer semestre",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pablo Yeguech",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "hbs": "^4.0.1",
+    "https": "^1.0.0",
+    "lodash": "^4.17.5",
+    "node-fetch": "^2.1.2",
+    "request": "^2.85.0",
+    "yargs": "^11.0.0"
+  }
+}

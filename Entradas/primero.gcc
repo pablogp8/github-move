@@ -1,0 +1,242 @@
+decimal trad;
+decimal trad1=78+5;
+decimal trad2[2][1];
+decimal trad3[5][9]=98+2;
+trad=5;
+trad21++;
+trad22--;
+trad[4][87]=11;
+trad+=12;
+trad/=13;
+trad=DS;
+trad="HOLA";
+trad='M';
+concatenar(vari,"hola");
+concatenar(varab,"hola","Mundo");
+convertirAcadena(43);
+convertirAentero("5");
+imprimir("hola todos");
+
+Persona Jorge;
+Jorge=nuevo Persona();
+
+Persona Carlos= nuevo Persona(15);
+
+Carlos.caracteristicas.ojos;
+
+carlos.setEdad(22);
+
+caracter var2[15]= concatenar(ty,"cols");
+
+
+caracter person_2[10]={"\0"};
+caracter letra_2=nada;
+
+decimal arreglo[4][3]={{8,7,9},{2,4,3},{7,2,6},{0,1,8}};
+
+
+
+Estructura Persona [
+	caracter nombre[25]; 
+	caracter genero[20] = Nada; 
+	entero edad; 
+	entero posicion = 0;
+	persona amigo;
+];
+
+usuario.nombre = "Maria Fernanda";
+usuario.edad = 25;
+usuario.amigo = usuario_2;
+
+Entero ubicacion = 0;
+Caracter cad = "hola mundo";
+crearPuntero(Entero, direccion) = obtenerDireccion(ubicacion); 
+crearPuntero(Caracter, c) = obtenerDireccion(cad);
+
+
+
+entero size = consultarTamanio(estructura);
+
+crearPuntero(Persona, a) = reservarMemoria(consultarTamanio(Persona));
+
+Usuario->nombre = "Maria Fernanda";
+destruirPuntero(Id1);
+
+entero FuncionLlamada2(funcion param) {
+	param = param + 500;
+	imprimir (concatenar(estp, convertirAcadena( param )));
+	retornar param;
+}
+
+Lista miLista = nuevo Lista(Entero);
+
+miLista.insertar(10);
+miNumero = miLista.obtener(2);
+miIndice = miLista.buscar(50);
+
+Pila miPila = nuevo Pila(Entero);
+miPila.Apilar (10);
+miPila.Apilar (50);
+miPila.Apilar(100);
+miPila.Desapilar();
+
+Cola colaNueva = nuevo Cola(entero);
+colaNueva.Encolar(10);
+colaNueva.Desencolar();
+
+Si( variable1 > 60 )
+	Es_verdadero {
+		
+	}
+	Es_falso {
+		
+	}
+Fin-si
+
+
+Evaluar_si (var2){
+	Es_igual_a 100:
+		
+	Es_igual_a 'b':
+		
+	Es_igual_a "elemento":
+		
+	defecto:
+		
+}
+
+
+Repetir_Mientras( Persona.estado != 2){
+
+}
+
+hacer{
+
+}mientras( a < 100);
+
+
+Ciclo_doble_condicion ( bandera == true , contador < 10 ) {
+
+}
+
+Repetir{
+
+}hasta_que( Persona.posicionX > 100);
+
+
+Repetir_contando (variable: contador; desde: 0; hasta: 10){
+
+}
+
+Enciclar ciclo_2 {
+
+}
+
+
+Contador (10){
+
+}
+
+Leer_Teclado ("Ingrese un True o false", Id_4);
+
+
+clase MiClase{
+
+}
+
+
+importar("primero.gcc");
+importar("datitos");
+clase miClase2{
+	publico entero atributo1;
+	publico caracter atributo_cadena="cadena de inicio";
+	
+	publico vacio suma(){
+
+	}
+
+	publico entero resta(entero a1, entero a2){
+
+	}	
+}
+
+clase MiClase3 hereda_de MiClase2{
+
+	decimal trad2[2][1];
+	publico decimal trad;	
+}
+
+clase MiClase4 {
+
+	publico entero suma(entero operador1, entero parametro2) {
+		retornar operador1 + operador2;
+	}
+
+	entero suma(caracter per, entero parametro2) {
+		retornar per.operador1 + operador2;
+	}
+
+	publico vacio ingresar_datos_persona(caracter nombre[20], entero edad, entero telefono) {
+		este.nombre = nombre;
+		este.edad = edad;
+		este.telefono = telefono;
+	}
+
+	@Sobrescribir
+	vacio salida_persona(caracter nombre[20], entero edad, entero telefono) {
+		este.nombre = nombre;
+		este.edad = edad;
+		este.telefono = telefono;
+	}
+
+	suma();
+	ingresar_datos_persona(dato1, dato2);
+
+}
+
+clase nuevaClase{
+	Procedimiento1();
+	Variable = Funcion1();
+	publico entero suma(entero operador1, entero parametro2) {
+		retornar operador1 + operador2;
+	}
+	entero suma(Persona per, entero parametro2) {
+		retornar per.operador1 + operador2;
+	}
+	publico vacio ingresar_datos_persona(caracter nombre[20], entero edad, entero telefono) {
+		este.nombre = nombre;
+		este.edad = edad;
+		este.telefono = telefono;
+	}
+	vacio salida_persona(caracter nombre[20], entero edad, entero telefono) {
+		este.nombre = nombre;
+		este.edad = edad;
+		este.telefono = telefono;
+	}
+}
+
+clase miClasesita{
+	publico entero atributo1 = 0;
+	publico caracter atributo_cadena[25]= " ";
+	
+	miClasesita(entero param1, caracter param2){
+		este.atributo1 = param1;
+		este.atributo_cadena = param2;
+	}
+}
+
+
+principal(){ 
+	imprimir ("/****inicializando variables****/"); 
+	imprimir (concatenar(trys, convertirAcadena(suma(este.op1, este.op2))));
+}
+
+clase miClase{ 
+	publico entero atributo1 = 0; 
+	publico caracter atributo_cadena[25] = ""; 
+	miClase(entero param1, caracter param2){
+		este.atributo1 = param1;
+		este.atributo_cadena = param2;
+	}
+}
+
