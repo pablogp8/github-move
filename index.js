@@ -15,9 +15,11 @@ let data=fs.readFileSync("./Entradas/entrada2.gcc",'utf-8');
 console.log(data);
 
 var tewnty=exec(data);
-console.log(tewnty);
+console.log(JSON.stringify(tewnty));
+
 
 /////////////////fin forma compilador
+
 
 let personas=[
     {

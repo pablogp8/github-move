@@ -1,3 +1,10 @@
+%{
+    function prependChild(node, child){
+      node.splice(2,0,child); 
+      return node;
+    }
+%}
+
 /* operator associations and precedence */
 
 %left MAS MENOS
@@ -20,13 +27,12 @@ expressions
 
 lisexp
     : lisexp expressions2
-        { $$ = ['ListaExp',{},$1,$2];  }
+        {$$ = prependChild($1, $2);}
     |expressions2
-        { $$=$1; }
+        {{ $$=['expresion',{},$1];}}
     ;
 
-/*expressions2*/
-/*    : e {$$= $1; }*/
+
  expressions2
     :declara { $$=$1; }
     |declara2{$$=$1} 
@@ -57,8 +63,8 @@ e
     | e OOR e {{$$ = ['OOR',{},$1,$3];}}
     | e OAND e {{$$ = ['OAND',{},$1,$3];}}
     | e OXOR e {{$$ = ['OXOR',{},$1,$3];}}
-    | ONOT e {{$$ = ['ONOT',{},$2,{}];}}
-    | APAREN e CPAREN {{$$ = ['PARENT',{},$2,{}];}}
+    | ONOT e {{$$ = ['ONOT',{},$2];}}
+    | APAREN e CPAREN {$$ = $2;}
     | NUMERO {$$ = Number(yytext);}
     | expc {$$=$1;}
     ;
@@ -68,11 +74,11 @@ e
   /********************************************************/
 
 declara
-    :tipodat declara2 {{$$ = ['POSIBLE',$1,{},$2];}}
+    :tipodat declara2 {{$$ = ['Declaracion',{},$1,$2];}}
     ;
 
 declara2
-    :ID declara1 {{$$ = ['DECLARA',{},$1,$2];}}
+    :ID declara1 {{$$ = ['Identifica',{},$1,$2];}}
     ;
 
 constructo
@@ -98,10 +104,10 @@ tipodat
     ;
 /****************cambio*/
 declara1
-    :asignapr1 PCOMA 
+    :asignapr1 PCOMA {{$$=['Asigna',{},$1]}}
     |ID declara3
     |APAREN constructo
-    | PCOMA
+    |PCOMA {$$="1";}
     |estrpun expc2 asigna PCOMA
     ;
 
@@ -112,7 +118,7 @@ estrpun
 
 declara3
     :funciones
-    |asignapr1 PCOMA {{$$ = ['ASIG',{},{},$1];}}
+    |asignapr1 PCOMA {$$=$1}
     | PCOMA
     ;    
 /**********************/
@@ -149,14 +155,14 @@ destrupunt
 
 
 asignapr1
-    :ASIG asignapr3
+    :ASIG asignapr3 {{$$ = ['ASIGNA',{},$2];}}
     |aop
     |defarre asignapr2
     |aumdism
     ;
 
 asignapr3
-    :e
+    :e {$$=$1}
     |NUEVO e
     | nadda
     ;

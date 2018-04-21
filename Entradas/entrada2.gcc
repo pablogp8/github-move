@@ -1,20 +1,2 @@
-clase nuevaClase{
-	Procedimiento1();
-	Variable = Funcion1();
-	publico entero suma(entero operador1, entero parametro2) {
-		retornar operador1 + operador2;
-	}
-	entero suma(Persona per, entero parametro2) {
-		retornar per.operador1 + operador2;
-	}
-	publico vacio ingresar_datos_persona(caracter nombre[20], entero edad, entero telefono) {
-		este.nombre = nombre;
-		este.edad = edad;
-		este.telefono = telefono;
-	}
-	vacio salida_persona(caracter nombre[20], entero edad, entero telefono) {
-		este.nombre = nombre;
-		este.edad = edad;
-		este.telefono = telefono;
-	}
-}
+decimal trad= 54+87*2;
+decimal trad2;
