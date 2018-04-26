@@ -20,7 +20,7 @@ $left ONOT
 %% /* language grammar */
 
 expressions
-    : lisexp EOF{typeof console !== 'undefined' ? console.log($1) : print($1);
+    : lisexp EOF{typeof console !== 'undefined' ? console.log(JSON.stringify($1)) : print($1);
         return $1;}
     ;
     
@@ -78,7 +78,17 @@ declara
     ;
 
 declara2
-    :ID declara1 {{$$ = ['Identifica',{},$1,$2];}}
+    :ID declara1 {{
+                    if(Array.isArray($2)){
+                        if($2[0]==='Declaracion'){
+                            $$=['Declaracion',{},$1,['Identifica',{},$2[1],$2[2]]];
+                        }else if($2[0]==='Asigna'){
+                             $$ = ['Identifica',{},$1,$2];
+                        }
+                    }else{
+                        $$ = ['Identifica',{},$1,$2];
+                    }
+                }}
     ;
 
 constructo
@@ -104,8 +114,8 @@ tipodat
     ;
 /****************cambio*/
 declara1
-    :asignapr1 PCOMA {{$$=['Asigna',{},$1]}}
-    |ID declara3
+    :asignapr1 PCOMA {{$$=['Asigna',{},$1];}}
+    |ID declara3 {{$$=['Declaracion',$1,$2];}}
     |APAREN constructo
     |PCOMA {$$="1";}
     |estrpun expc2 asigna PCOMA
@@ -118,8 +128,8 @@ estrpun
 
 declara3
     :funciones
-    |asignapr1 PCOMA {$$=$1}
-    | PCOMA
+    |asignapr1 PCOMA {{$$=['Asigna',{},$1];}}
+    | PCOMA {$$="1";}
     ;    
 /**********************/
 asigna
@@ -155,7 +165,7 @@ destrupunt
 
 
 asignapr1
-    :ASIG asignapr3 {{$$ = ['ASIGNA',{},$2];}}
+    :ASIG asignapr3 {{$$ = ['VALOR',{},$2];}}
     |aop
     |defarre asignapr2
     |aumdism
@@ -190,8 +200,8 @@ aop
 
 expc
     :ID expc1 {$$=yytext; }
-    | CADENA
-    | CARACTER
+    | CADENA {var tt=yytext.replace("\"","");$$=tt.replace("\"","");}
+    | CARACTER {var tt=yytext.replace("'","");$$=tt.replace("'","");}
     |classes1
     |funci
     ;
@@ -199,9 +209,10 @@ expc
 expc1
     :PUNTO expc2
     |APAREN listallam CPAREN
-    |
+    |{$$="";}
     ;
 /*cambio de ID por e*/
+
 expc2
     : TAMN
     |ID expc1

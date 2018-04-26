@@ -10,17 +10,37 @@ function exec (input){
     return parser.parse(input);
 }
 
+////funcion de recorrido de arrays
+function recorrido(arreglo){
+    arreglo.forEach(function(element,indice) {
+        
+        if(Array.isArray(element)){
+            console.log("--**********--");
+            recorrido(element);
+            console.log("**********");
+        }else{
+            console.log(indice+" "+element+" "+Array.isArray(element));
+        }
+    }, this);
+}
 
 let data=fs.readFileSync("./Entradas/entrada2.gcc",'utf-8');
-console.log(data);
+//console.log(data);
 
 var tewnty=exec(data);
-console.log(JSON.stringify(tewnty));
+console.log(JSON.stringify(tewnty,undefined,1));
 
-
+/*
+var prueba1=['Prueb',['otro',78,['mas']],32];
 /////////////////fin forma compilador
 
-
+/*
+prueba1.splice(0,1,"Hello");
+console.log(prueba1);
+console.log(prueba1.length);
+*/
+recorrido(tewnty);
+console.log(tewnty[0]);
 let personas=[
     {
         id:1,

@@ -1,2 +1,7 @@
 decimal trad= 54+87*2;
 decimal trad2;
+entero vari3 = "hola mundo";
+entero vrt4=vari3;
+trad2="nueva linea";
+Bola bolita;
+Esfera esf=32;

@@ -84,7 +84,7 @@ performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* actio
 var $0 = $$.length - 1;
 switch (yystate) {
 case 1:
-typeof console !== 'undefined' ? console.log($$[$0-1]) : print($$[$0-1]);
+typeof console !== 'undefined' ? console.log(JSON.stringify($$[$0-1])) : print($$[$0-1]);
         return $$[$0-1];
 break;
 case 2:
@@ -160,28 +160,47 @@ case 30:
 this.$ = ['Declaracion',{},$$[$0-1],$$[$0]];
 break;
 case 31:
-this.$ = ['Identifica',{},$$[$0-1],$$[$0]];
+
+                    if(Array.isArray($$[$0])){
+                        if($$[$0][0]==='Declaracion'){
+                            this.$=['Declaracion',{},$$[$0-1],['Identifica',{},$$[$0][1],$$[$0][2]]];
+                        }else if($$[$0][0]==='Asigna'){
+                             this.$ = ['Identifica',{},$$[$0-1],$$[$0]];
+                        }
+                    }else{
+                        this.$ = ['Identifica',{},$$[$0-1],$$[$0]];
+                    }
+                
 break;
 case 38: case 39: case 40: case 41: case 42:
 this.$=yytext;
 break;
-case 43:
-this.$=['Asigna',{},$$[$0-1]]
+case 43: case 51:
+this.$=['Asigna',{},$$[$0-1]];
 break;
-case 46:
+case 44:
+this.$=['Declaracion',$$[$0-1],$$[$0]];
+break;
+case 46: case 52:
 this.$="1";
-break;
-case 51:
-this.$=$$[$0-1]
 break;
 case 54:
 this.$={};
 break;
 case 61:
-this.$ = ['ASIGNA',{},$$[$0]];
+this.$ = ['VALOR',{},$$[$0]];
 break;
 case 76:
 this.$=yytext; 
+break;
+case 77:
+var tt=yytext.replace("\"","");this.$=tt.replace("\"","");
+break;
+case 78:
+var tt=yytext.replace("'","");this.$=tt.replace("'","");
+break;
+case 83:
+this.$="";
 break;
 }
 },
