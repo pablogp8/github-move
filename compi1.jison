@@ -84,6 +84,10 @@ declara2
                             $$=['Declaracion',{},$1,['Identifica',{},$2[1],$2[2]]];
                         }else if($2[0]==='Asigna'){
                              $$ = ['Identifica',{},$1,$2];
+                        }else if($2[0]=='DEFARREGLO'){
+                            $$=['Identifica',{},$1,$2];
+                        }else{
+                            $$=prependChild($2,$1);
                         }
                     }else{
                         $$ = ['Identifica',{},$1,$2];
@@ -92,17 +96,17 @@ declara2
     ;
 
 constructo
-    :constructo2 CPAREN constructo1
+    :constructo2 CPAREN constructo1 {$$=prependChild($1,$3)}
     ;
 
 constructo2
-    : listparam1
-    |listallam2
-    |
+    : listparam1{{$$=['DECLARAFUN',{},$1];}}
+    |listallam2{$$=$1}
+    |{$$=['VACIO',{},{}];}
     ;
 constructo1
-    : PCOMA
-    | ALLAVE bodyfun CLLAVE
+    : PCOMA{$$='1'}
+    | ALLAVE bodyfun CLLAVE {$$=$2}
     ;
 
 tipodat
@@ -116,30 +120,32 @@ tipodat
 declara1
     :asignapr1 PCOMA {{$$=['Asigna',{},$1];}}
     |ID declara3 {{$$=['Declaracion',$1,$2];}}
-    |APAREN constructo
+    |APAREN constructo{$$=$2}
     |PCOMA {$$="1";}
     |estrpun expc2 asigna PCOMA
+    |defarre asignapr2 PCOMA{{$$=['DEFARREGLO',{},$1,$2];}}
     ;
 
 estrpun
-    :PUNTO
-    |PPUNTE
+    :PUNTO{$$='PUNTO'}
+    |PPUNTE{$$='ASIPUNT'}
     ;    
 
 declara3
-    :funciones
+    :funciones{$$=$1}
     |asignapr1 PCOMA {{$$=['Asigna',{},$1];}}
-    | PCOMA {$$="1";}
+    | PCOMA {$$='1';}
+    |defarre asignapr2 PCOMA{{$$=['DEFARREGLO',{},$1,$2];}}
     ;    
 /**********************/
 asigna
     :ASIG e {$$=$2;}
-    |{$$={};}
+    |{$$='1';}
     ;
 
 defarre
-    :defarre ACORCH e CCORCH
-    |ACORCH e CCORCH
+    :defarre ACORCH e CCORCH{$$=prependChild($1,$3);}
+    |ACORCH e CCORCH{{$$=['ARREGLO',{},$2];}}
     ;
 
   /***************************-****************************/    
@@ -147,51 +153,50 @@ defarre
   /********************************************************/
 
 puntcre
-    : CREAP APAREN puntcre2 COMA ID CPAREN asigna PCOMA
+    : CREAP APAREN puntcre2 COMA ID CPAREN asigna PCOMA {{$$=['CREAPUN',$3,$5,$7];}}
     ;
 
 puntcre2
-    :tipodat
-    |ID
+    :tipodat{$$=$1;}
+    |ID{$$=yytext;}
     ;
 
 destrupunt
-    :DESTPUNT APAREN ID CPAREN PCOMA
+    :DESTPUNT APAREN ID CPAREN PCOMA {{$$=['DESTRPUN',$3];}}
     ;
 
   /***************************-****************************/    
  /***********Asignacion de Variables y arreglos*************/
   /********************************************************/
 
-
+/*de aca la saque l******/
 asignapr1
     :ASIG asignapr3 {{$$ = ['VALOR',{},$2];}}
-    |aop
-    |defarre asignapr2
-    |aumdism
+    |aop {$$=$1}    
+    |aumdism {$$=$1}
     ;
 
 asignapr3
     :e {$$=$1}
-    |NUEVO e
-    | nadda
+    |NUEVO e {{$$=['NUEVO',$2];}}
+    | nadda{$$=$1}
     ;
 
 asignapr2
-    :ASIG asignapr3
-    |
+    :ASIG asignapr3 {{$$ = ['VALOR',{},$2];}}
+    |{$$='1';}
     ;
 
 aumdism
-    :AUMEN
-    |DISM
+    :AUMEN {$$='INCREMENTA';}
+    |DISM  {$$='DECREMENTA';}
     ;
 
 aop
-    : ASUM NUMERO 
-    | AMULTI NUMERO 
-    | AMENOS NUMERO 
-    | ADIVI NUMERO 
+    : ASUM NUMERO {{$$=['SUMCORTA',{},$2];}}
+    | AMULTI NUMERO {{$$=['MULTCORTA',{},$2];}}
+    | AMENOS NUMERO {{$$=['RESCORTA',{},$2];}}
+    | ADIVI NUMERO {{$$=['DIVICORTA',{},$2];}}
     ;
 
   /***************************-****************************/    
@@ -202,27 +207,27 @@ expc
     :ID expc1 {$$=yytext; }
     | CADENA {var tt=yytext.replace("\"","");$$=tt.replace("\"","");}
     | CARACTER {var tt=yytext.replace("'","");$$=tt.replace("'","");}
-    |classes1
-    |funci
+    |classes1{$$=$1}
+    |funci{$$=$1}
     ;
 
 expc1
-    :PUNTO expc2
-    |APAREN listallam CPAREN
+    :PUNTO expc2 {{$$=['METODO',{},$2];}}
+    |APAREN listallam CPAREN {{$$=['FUNCION',{},$2];}}
     |{$$="";}
     ;
 /*cambio de ID por e*/
 
 expc2
-    : TAMN
-    |ID expc1
-    |INSRT APAREN e CPAREN
-    |OBTNR APAREN NUMERO CPAREN
-    |BSQR APAREN e CPAREN
-    |APILAR APAREN e CPAREN
-    |DAPILAR APAREN CPAREN
-    |ENCOLAR APAREN e CPAREN
-    |DENCOLAR APAREN CPAREN
+    : TAMN {{$$=['TAMANIO',{}];}}
+    |ID expc1 {{$$=['METODO',{},$1,$2];}}
+    |INSRT APAREN e CPAREN {{$$=['INSERTAR',{},$3];}}
+    |OBTNR APAREN NUMERO CPAREN {{$$=['OBTENER',{},$3];}}
+    |BSQR APAREN e CPAREN {{$$=['BUSCAR',{},$3];}}
+    |APILAR APAREN e CPAREN {{$$=['APILAR',{},$3];}}
+    |DAPILAR APAREN CPAREN {{$$=['DESAPILAR',{}];}}
+    |ENCOLAR APAREN e CPAREN {{$$=['ENCOLAR',{},$3];}}
+    |DENCOLAR APAREN CPAREN {{$$=['DESENCOLAR',{}];}}
     ;
 
   /***************************-****************************/    
@@ -231,22 +236,22 @@ expc2
 
 /*cambios de funci2 por e en linea 1 y 4*/
 funci
-    :CONCAT APAREN ID COMA funci2 cncat CPAREN 
-    |CONVCAD APAREN e CPAREN 
-    |CONVENT APAREN e CPAREN
-    |IMPR APAREN funci2 CPAREN
-    |OBTDIR APAREN ID CPAREN
-    |RESERMEM APAREN e CPAREN
-    |CONSULTAM APAREN ID CPAREN 
+    :CONCAT APAREN ID COMA funci2 cncat CPAREN {{$$=['CONCATENA',{},$3,$5,$6];}}
+    |CONVCAD APAREN e CPAREN {{$$=['CONVCADENA',{},$3];}}
+    |CONVENT APAREN e CPAREN {{$$=['CONVENTERO',{},$3];}}
+    |IMPR APAREN funci2 CPAREN {{$$=['IMPRIMIR',{},$3];}}
+    |OBTDIR APAREN ID CPAREN {{$$=['OBTENERDIR',{},$3];}}
+    |RESERMEM APAREN e CPAREN {{$$=['RESMEMORIA',{},$3];}}
+    |CONSULTAM APAREN ID CPAREN  {{$$=['CONSULTAM',{},$3];}}
     ;
 
 funci2 
-    : e
+    : e{$$=$1;}
     ;
 
 cncat
-    : COMA e
-    |
+    : COMA e {$$=$1;}
+    |{$$='1';}
     ;
 
   /***************************-****************************/    
@@ -254,68 +259,86 @@ cncat
   /********************************************************/
 
 importacion
-    : importacion IMPOR APAREN CADENA CPAREN PCOMA
-    | 
+    : importacion IMPOR APAREN CADENA CPAREN PCOMA {var tt=$4.replace("\"",""); $$=prependChild($1,tt.replace("\"",""));}
+    | {{$$=['IMPORTA',{},'1'];}}
     ;
 
 classes
-    : importacion classes2
+    : importacion classes2 {{$$=['CLASE',$1,$2[1],$2[2],$2[3]];}}
     ;
 
 classes2
-    :CLASS ID hern ALLAVE bodclas CLLAVE
-    |PRINCIPAL APAREN CPAREN ALLAVE bodclas CLLAVE
+    :CLASS ID hern ALLAVE bodclas CLLAVE {{$$=['DECLASE',$2,$3,$5];}} 
+    |PRINCIPAL APAREN CPAREN ALLAVE bodclas CLLAVE{{$$=['MAIN',$5];}}
     ;
 
-hern:HERENC ID
-    |
+hern:HERENC ID{$$=$2;}
+    | {$$='1';}
     ;
 
 bodclas
-    : bodclas visible declara
-    | bodclas declara2
+    : bodclas visible declara {{$3.splice(1,1,$2);$$=prependChild($1,$3);}}
+    | bodclas declara2{{$$=prependChild($1,$2);}}
     | bodclas OVERWRIT visible declara
-    | bodclas funci PCOMA
-    | bodclas estrut
-    | bodclas puntcre
-    | bodclas destrupunt
-    | bodclas strdat
-    | bodclas sentscontr
-    |
+    | bodclas funci PCOMA {{$$=prependChild($1,$2);}}
+    | bodclas estrut {{$$=prependChild($1,$2);}}
+    | bodclas puntcre {{$$=prependChild($1,$2);}}
+    | bodclas destrupunt {{$$=prependChild($1,$2);}}
+    | bodclas strdat {{$$=prependChild($1,$2);}}
+    | bodclas sentscontr {{$$=prependChild($1,$2);}}
+    | {{$$=['CUERPOCLASS',{}];}}
     ;
 
-listallam: listallam2
-    |
+listallam: listallam2{$$=$1;}
+    |{$$='1';}
     ;
 
 listallam2
-    : listallam2 COMA posid2 listallameste posid
-    | listallameste posid
+    : listallam2 COMA posid2 listallameste posid{{
+                                if($3==='1'){
+                                    if($5==='1'){
+                                        $$=prependChild($1,$4);
+                                    }else{
+                                        var tem=[$4,$5];
+                                        $$=prependChild($1,tem);
+                                    }
+                                }else{
+                                    var tem=[$3,$4];
+                                    $$=prependChild($1,tem);
+                                }
+                            }}
+    | listallameste posid {{if($2==='1'){
+                           $$=['Parametros',{},$1]; 
+                        }else{
+                            $$=['Parametros',{},[$1,$2]];
+                        }
+                    }}
     ;
+
 listallameste
-    :e
+    :e {$$=$1;}
     ;
 
 posid
-    :ID 
-    |
+    :ID {$$=$1;}
+    |{$$='1';}
     ;
 
 posid2
-    :tipodat
-    |
+    :tipodat{$$=$1;}
+    |{$$='1';}
     ;
 
 
 classes1
-    : ESTE PUNTO ID 
+    : ESTE PUNTO ID {{$$=['ESTE',{},$3]}}
     ;
 
 visible
     :PUBL
     |PRIV
     |PROTE
-    |
+    |{$$='Publico';}
     ;
 
   /***************************-****************************/    
@@ -327,56 +350,61 @@ visible
  /************************Funciones*************************/
   /********************************************************/
 funciones
-    : APAREN listparam CPAREN ALLAVE bodyfun CLLAVE
+    : APAREN listparam CPAREN ALLAVE bodyfun CLLAVE{{$$=['FUNCION',$2,$5];}}
     ;
 
 listparam
-    :listparam1
-    |
+    :listparam1{$$=$1;}
+    |{$$='1';}
     ;
+
 /*CAMBIO DE tipodat por tipfun*/
 listparam1
-    : listparam1 COMA tipfun ID listparam3
-    |tipfun ID listparam3
+    : listparam1 COMA tipfun ID listparam3{{
+                        var tem=[$3,['Identifica',{},$4,$5]];
+                        $$=prependChild($1,tem);
+                        }}
+    |tipfun ID listparam3 {{
+                    var tem=['Identifica',{},$2,$3];
+                    $$=['Parametros',{},[$1,tem]];}}
     ;
 
 tipfun
-    :tipodat
-    |FUNSC
+    :tipodat{$$=$1;}
+    |FUNSC{$$=$1;}
     ;
 
 listparam3
-    :ACORCH e CCORCH
-    |
+    :ACORCH e CCORCH {$$=['ARREGLO',{},$2];}
+    |{$$='1';}
     ;
 
 bodyfun
-    : bodyfun ESTE PUNTO ID asignapr1 PCOMA
-    | bodyfun ID asignapr1 PCOMA
-    | bodyfun funci PCOMA
-    | bodyfun RETORNA e PCOMA
-    |
+    : bodyfun ESTE PUNTO ID asignapr12 PCOMA{{var tem=['ESTE',$4,$5];$$=prependChild($1,tem);}}
+    | bodyfun ID asignapr12 PCOMA{{var tem=['Asigna',{},$2,$3];$$=prependChild($1,tem);}}
+    | bodyfun funci PCOMA {{$$=prependChild($1,$2);}}
+    | bodyfun RETORNA e PCOMA {{var tem=['RETORNA',$3];$$=prependChild($1,tem);}}
+    | {{$$=['CUERPOFUN',{}];}}
     ; 
-
-nadda
-    :NADA
-    |ALLAVE nadda2 CLLAVE
+asignapr12
+    :asignapr1{$$=$1}
+    |defarre asignapr2 {{$$=['DEFARREGLO',{},$1,$2];}}
     ;
 
-/*nadda2*/
-    /*: CADENA*/
-    /*|CARACTER*/
-    /*;*/
+nadda
+    :NADA {$$='NADA'}
+    |ALLAVE nadda2 CLLAVE{{$$=['VALARREGLO',{},$2];}}
+    ;
 
 nadda2
-    :nadda2 COMA nadda2op
-    |e
-    |ALLAVE nadda2 CLLAVE
+    :nadda2 COMA nadda2op {$$=prependChild($1,$2);}
+    |e{{$$=['VALOR',{},$1];}}
+    |ALLAVE nadda2 CLLAVE {{$$=['VALARREGLO',{},$2];}}
     ;
 
 nadda2op
-    :ALLAVE nadda2 CLLAVE
-    |e
+    :ALLAVE nadda2 CLLAVE {{$$=['VALARREGLO',{},$2];}}
+    |e{$$=$1}
     ;
 
   /***************************-****************************/    
@@ -384,14 +412,14 @@ nadda2op
   /********************************************************/    
 
 estrut
-    :ESTRUCTUR ID ACORCH bodestrut CCORCH PCOMA
+    :ESTRUCTUR ID ACORCH bodestrut CCORCH PCOMA{{$$=['ESTRUCTURA',$2,$4];}}
     ;
 
 bodestrut
-    :declara
-    |declara2
-    | bodestrut declara
-    |bodestrut declara2
+    :declara {{$$=['CUERPOESTR',{},$1];}}
+    |declara2 {{$$=['CUERPOESTR',{},$1];}}
+    |bodestrut declara {{$$=prependChild($1,$2);}}
+    |bodestrut declara2 {{$$=prependChild($1,$2);}}
     ;
 
   /***************************-****************************/    
@@ -399,9 +427,9 @@ bodestrut
   /********************************************************/ 
 
 strdat
-    :LISTT ID ASIG NUEVO LISTT APAREN puntcre2 CPAREN PCOMA
-    |PILA ID ASIG NUEVO PILA APAREN puntcre2 CPAREN PCOMA
-    |COLA ID ASIG NUEVO COLA APAREN puntcre2 CPAREN PCOMA
+    :LISTT ID ASIG NUEVO LISTT APAREN puntcre2 CPAREN PCOMA {{$$=['LISTA',$2,$7];}}
+    |PILA ID ASIG NUEVO PILA APAREN puntcre2 CPAREN PCOMA {{$$=['PILA',$2,$7];}}
+    |COLA ID ASIG NUEVO COLA APAREN puntcre2 CPAREN PCOMA {{$$=['COLA',$2,$7];}}
     ;
 
 
@@ -410,36 +438,36 @@ strdat
   /********************************************************/ 
 
 sentscontr
-    :CSI APAREN e CPAREN sentifV sentiff FSI
-    |EVALUARS APAREN e CPAREN ALLAVE bodeval defeval CLLAVE
-    |REPMNT APAREN e CPAREN ALLAVE CLLAVE
-    |HACER ALLAVE CLLAVE MNTRAS APAREN e CPAREN PCOMA
-    |CICLODC APAREN e COMA e CPAREN ALLAVE CLLAVE
-    |REPTIR ALLAVE CLLAVE HASTAQ APAREN e CPAREN PCOMA
-    |REPCONT APAREN bodrepcon CPAREN ALLAVE CLLAVE
-    |ENCICLAR ID ALLAVE CLLAVE
-    |CONTADOR APAREN e CPAREN ALLAVE CLLAVE
-    |LEERT APAREN e COMA ID CPAREN PCOMA
+    :CSI APAREN e CPAREN sentifV sentiff FSI {{$$=['SI',$3,$5,$6];}}
+    |EVALUARS APAREN e CPAREN ALLAVE bodeval defeval CLLAVE {{$$=['EVALUARSI',$3,$6,$7];}}
+    |REPMNT APAREN e CPAREN ALLAVE CLLAVE {{$$=['REPETIRMNT',$3,$6];}}
+    |HACER ALLAVE CLLAVE MNTRAS APAREN e CPAREN PCOMA {{$$=['HACER',$7,$3];}}
+    |CICLODC APAREN e COMA e CPAREN ALLAVE CLLAVE {{$$=['CICLODC',$3,$5,$8];}}
+    |REPTIR ALLAVE CLLAVE HASTAQ APAREN e CPAREN PCOMA {{$$=['REPETIR',$7,$3];}}
+    |REPCONT APAREN bodrepcon CPAREN ALLAVE CLLAVE {{$$=['REPCONT',$3,$6];}}
+    |ENCICLAR ID ALLAVE CLLAVE {{$$=['ENCILCAR',$2,$4];}}
+    |CONTADOR APAREN e CPAREN ALLAVE CLLAVE {{$$=['CONTADOR',$3,$6];}}
+    |LEERT APAREN e COMA ID CPAREN PCOMA {{$$=['LEERT',$3,$5];}}
     ;
 
 sentifV
-    :EVERDAD ALLAVE CLLAVE
+    :EVERDAD ALLAVE CLLAVE {$$=$3;}
     ;
 
 sentiff
-    :EFALSO ALLAVE CLLAVE
-    |
+    :EFALSO ALLAVE CLLAVE {$$=$3;}
+    |{$$='1';}
     ;
 
 bodeval
-    : ESIGLA e DPUNTO 
-    |bodeval ESIGLA e DPUNTO
+    : ESIGLA e DPUNTO {{$$=['EVALUAR',{},[$2,'Cuerpo']];}}
+    |bodeval ESIGLA e DPUNTO {{var tem=[$3,'Cuerpo']; $$=prependChild($1,tem);}}
     ;
 
 defeval
-    :DFCT DPUNTO 
+    :DFCT DPUNTO {{$$=['PORDEF','Cuerpo'];}}
     ;
 
 bodrepcon
-    :VARIBL DPUNTO ID PCOMA DSD DPUNTO e PCOMA HSTA DPUNTO e
+    :VARIBL DPUNTO ID PCOMA DSD DPUNTO e PCOMA HSTA DPUNTO e {{$$=[$3,$7,$11];}}
     ;

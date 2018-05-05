@@ -28,7 +28,7 @@ let data=fs.readFileSync("./Entradas/entrada2.gcc",'utf-8');
 //console.log(data);
 
 var tewnty=exec(data);
-console.log(JSON.stringify(tewnty,undefined,1));
+//console.log(JSON.stringify(tewnty,undefined,1));
 
 /*
 var prueba1=['Prueb',['otro',78,['mas']],32];
@@ -39,8 +39,9 @@ prueba1.splice(0,1,"Hello");
 console.log(prueba1);
 console.log(prueba1.length);
 */
-recorrido(tewnty);
-console.log(tewnty[0]);
+
+//recorrido(tewnty);
+//console.log(tewnty[0]);
 let personas=[
     {
         id:1,

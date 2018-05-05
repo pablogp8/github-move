@@ -1,7 +1,17 @@
-decimal trad= 54+87*2;
-decimal trad2;
-entero vari3 = "hola mundo";
-entero vrt4=vari3;
-trad2="nueva linea";
-Bola bolita;
-Esfera esf=32;
+
+
+importar("primero.gcc");
+importar("datitos");
+clase miClase2{
+	publico entero atributo1;
+	publico caracter atributo_cadena="cadena de inicio";
+	entero vNueva=0;
+
+	publico vacio suma(){
+
+	}
+
+	publico entero resta(entero a1, entero a2){
+		atributo1=32;
+	}	
+}
